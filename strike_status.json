@@ -1,0 +1,18 @@
+{
+    "Sachsen": false,
+    "Bayern": false,
+    "Rheinland-Pfalz": false,
+    "Saarland": false,
+    "Schleswig-Holstein": false,
+    "Niedersachsen": false,
+    "Nordrhein-Westfalen": true,
+    "Baden-Wuerttemberg": true,
+    "Brandenburg": false,
+    "Mecklenburg-Vorpommern": false,
+    "Bremen": false,
+    "Hamburg": false,
+    "Hessen": false,
+    "Thueringen": false,
+    "Sachsen-Anhalt": false,
+    "Berlin": false
+}

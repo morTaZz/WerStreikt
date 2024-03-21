@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Germany Map with Strike Status</title>
+    <style>
+        /* Add your CSS styles here */
+        .tooltip {
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 5px;
+            border-radius: 5px;
+            font-size: 12px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+
+<svg width="1000" height="1000" viewBox="0 0 1000 1000" id="germany_map">
+
+    <image href="{{ url_for('static', filename='de.svg') }}" width="1000" height="1000" />
+
+
+    <g id="label_points">
+        <circle class="Sachsen" cx="710.3" cy="538.8" id="DESN" r="3" fill="green" stroke="black" stroke-width="1"></circle>
+        <circle class="Bayern" cx="588.3" cy="791.2" id="DEBY"r="3" fill="green" stroke="black" stroke-width="1"></circle>
+        <circle class="Rheinland-Pfalz" cx="268.5" cy="642.2" id="DERP"r="3" fill="green" stroke="black" stroke-width="1"></circle>
+        <circle class="Saarland" cx="248.9" cy="720.5" id="DESL"r="3" fill="green" stroke="black" stroke-width="1"></circle>
+        <circle class="Schleswig-Holstein" cx="448.9" cy="170" id="DESH"r="3" fill="green" stroke="black" stroke-width="1"></circle>
+        <circle class="Niedersachsen" cx="463.1" cy="360.1" id="DENI"r="3" fill="green" stroke="black" stroke-width="1"></circle>
+        <circle class="Nordrhein-Westfalen" cx="278.9" cy="479.5" id="DENW"r="3" fill="green" stroke="black" stroke-width="1"></circle>
+        <circle class="Baden-Wuerttemberg" cx="401.1" cy="819.7" id="DEBW"r="3" fill="red" stroke="black" stroke-width="1"></circle>
+        <circle class="Brandenburg" cx="768.2" cy="411.9" id="DEBB" r="3" fill="green" stroke="black" stroke-width="1"></circle>
+        <circle class="Mecklenburg-Vorpommern" cx="670" cy="205.4" id="DEMV" r="3" fill="green" stroke="black" stroke-width="1"></circle>
+        <circle class="Bremen" cx="381.4" cy="289.2" id="DEHB"r="3" fill="green" stroke="black" stroke-width="1"></circle>
+        <circle class="Hamburg" cx="472.5" cy="233.3" id="DEHH"r="3" fill="green" stroke="black" stroke-width="1"></circle>
+        <circle class="Hessen" cx="411.3" cy="567.5" id="DEHE"r="3" fill="green" stroke="black" stroke-width="1"></circle>
+        <circle class="Thueringen" cx="535.9" cy="550.5" id="DETH"r="3" fill="green" stroke="black" stroke-width="1"></circle>
+        <circle class="Sachsen-Anhalt" cx="590.3" cy="429.6" id="DEST"r="3" fill="green" stroke="black" stroke-width="1"></circle>
+        <circle class="Berlin" cx="718" cy="359" r="3" id="DEBE" fill="green" stroke="black" stroke-width="1"></circle>
+    </g>
+</svg>
+
+<div class="tooltip" id="tooltip"></div>
+<script>
+    // Wait for the DOM to be fully loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        const labelPoints = document.getElementById('label_points');
+        const tooltip = document.getElementById('tooltip');
+
+        // Assuming this data is being correctly injected by Flask
+        const strikeStatusData = JSON.parse('{{ strike_status|tojson|safe }}');
+
+        // Loop through the strike status data to update circle colors
+        Object.keys(strikeStatusData).forEach(function(state) {
+            if (strikeStatusData[state]) { // if the status is true
+                const circle = labelPoints.getElementsByClassName(state)[0]; // assuming class names are unique
+                if (circle) {
+                    circle.setAttribute('fill', 'red'); // Set color to red
+                }
+            }
+        });
+
+        // Add mouseover event listener to labelPoints
+        labelPoints.addEventListener('mouseover', function(event) {
+            if (event.target.tagName === 'circle') {
+                const state = event.target.classList[0]; // Get the class name of the circle
+                const strikeStatus = strikeStatusData[state]; // Get strike status for the state
+                if (strikeStatus !== undefined) {
+                    const strikeText = strikeStatus ? event.target.getAttribute('class') + ': Streikt!' : event.target.getAttribute('class') + ': Kein Streik'; // Convert boolean to text
+                    tooltip.textContent = strikeText;
+                    tooltip.style.display = 'block';
+                    tooltip.style.left = event.pageX + 'px';    
+                    tooltip.style.top = event.pageY + 'px';
+                }
+            }
+        });
+
+        // Add mouseout event listener to labelPoints
+        labelPoints.addEventListener('mouseout', function() {
+            tooltip.style.display = 'none';
+        });
+    });
+</script>
+
+
+</body>
+</html>
