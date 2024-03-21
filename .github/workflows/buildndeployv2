@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      
+      # Prepare GitHub Pages content
+      - name: Prepare GitHub Pages
+        run: |
+          mkdir -p docs
+          cp -r static/* docs/
+          cp index.html docs/
+          # Add any other necessary commands to copy/build your site's content
+
+      # Commit and push changes to docs/ directory
+      - name: Commit changes to docs/
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add docs/
+          git commit -m "Update GitHub Pages content" -a || echo "No changes to commit"
+          git push
